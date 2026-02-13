@@ -1,13 +1,17 @@
 import { NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+// This pulls the direct password from your Vercel settings
+const redis = new Redis({
+  url: process.env.REDIS_URL || '',
+  token: process.env.REDIS_TOKEN || '',
+})
 
 export async function GET() {
   try {
-    // This reads the location from your redis-yellow-zebra database
-    const data = await kv.get('lifeline-state');
+    const data = await redis.get('lifeline-state');
     return NextResponse.json(data || { error: 'No data found' });
   } catch (error) {
-    console.error("Database Read Error:", error);
     return NextResponse.json({ error: 'Database Read Error' }, { status: 500 });
   }
 }
@@ -15,14 +19,12 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    // This saves the phone's signal into redis-yellow-zebra
-    await kv.set('lifeline-state', {
+    await redis.set('lifeline-state', {
       ...body,
       lastCheckIn: Date.now()
     });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Database Write Error:", error);
     return NextResponse.json({ error: 'Database Write Error' }, { status: 500 });
   }
 }
