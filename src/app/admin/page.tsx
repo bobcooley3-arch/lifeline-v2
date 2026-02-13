@@ -3,19 +3,27 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 
-// Map parts
+// Visual Components (Dynamic is fine here)
 const MapContainer = dynamic(() => import('react-leaflet').then((mod) => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then((mod) => mod.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then((mod) => mod.Marker), { ssr: false });
 const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false });
-const useMap = dynamic(() => import('react-leaflet').then((mod) => mod.useMap), { ssr: false });
 
-// This small component moves the map view when the pin moves
-function MapRecenter({ center }: { center: [number, number] }) {
-  const map = (window as any).L ? useMap() : null; // Safety check for SSR
+// This component handles the map movement safely
+function MapController({ center }: { center: [number, number] }) {
+  // We import the hook only when the component is running in the browser
+  const [map, setMap] = useState<any>(null);
+  
+  // Get the map instance safely
+  const MapHookLoader = require('react-leaflet').useMap;
+  const currentMap = MapHookLoader();
+
   useEffect(() => {
-    if (map && center) map.setView(center, 15);
-  }, [center, map]);
+    if (currentMap && center) {
+      currentMap.setView(center, 15);
+    }
+  }, [center, currentMap]);
+
   return null;
 }
 
@@ -29,8 +37,6 @@ export default function AdminMap() {
     try {
       const response = await fetch('/api/pulse');
       const data = await response.json();
-      
-      // Sarah's phone sends data inside 'location' or 'lastKnownLocation'
       const loc = data.location || data.lastKnownLocation;
       
       if (loc && loc.lat && loc.lng) {
@@ -44,13 +50,14 @@ export default function AdminMap() {
   }
 
   useEffect(() => {
+    // Load Leaflet library for icons
     import('leaflet').then((leaflet) => setL(leaflet));
     fetchLocation();
-    const interval = setInterval(fetchLocation, 10000); // Check every 10s
+    const interval = setInterval(fetchLocation, 10000);
     return () => clearInterval(interval);
   }, []);
 
-  if (!L) return <div className="p-10 text-center">Loading Safety Portal...</div>;
+  if (!L) return <div className="p-10 text-center text-white bg-slate-950 h-screen font-sans">INITIALIZING SAFETY PORTAL...</div>;
 
   const icon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -60,17 +67,17 @@ export default function AdminMap() {
   });
 
   return (
-    <div style={{ height: '100vh', width: '100%' }} className="bg-slate-900">
-      <div className="p-4 bg-blue-900 text-white flex justify-between items-center shadow-xl">
+    <div style={{ height: '100vh', width: '100%' }} className="bg-slate-950 font-sans">
+      <div className="p-4 bg-blue-900 text-white flex justify-between items-center border-b border-blue-800 shadow-2xl">
         <div>
-          <h1 className="font-black text-xl tracking-tight">DAD&apos;S SAFETY PORTAL</h1>
-          <p className="text-xs text-blue-300">LIVE MONITORING ACTIVE</p>
+          <h1 className="font-black text-xl tracking-tighter uppercase italic">Lifeline: Admin</h1>
+          <p className="text-[10px] text-blue-300 font-bold uppercase tracking-[0.2em]">Monitoring Sarah</p>
         </div>
         <div className="text-right">
-          <div className="text-sm font-bold">Last Signal: {lastCheckIn}</div>
+          <div className="text-sm font-black tabular-nums">{lastCheckIn}</div>
           {battery !== null && (
-            <div className={`text-xs ${battery < 20 ? 'text-red-400 animate-pulse' : 'text-emerald-400'}`}>
-              Sarah&apos;s Battery: {battery}%
+            <div className={`text-[10px] font-bold ${battery < 20 ? 'text-red-500 animate-pulse' : 'text-emerald-500'}`}>
+              BATTERY: {battery}%
             </div>
           )}
         </div>
@@ -81,7 +88,7 @@ export default function AdminMap() {
         <Marker position={position} icon={icon}>
           <Popup>Sarah is here.</Popup>
         </Marker>
-        <MapRecenter center={position} />
+        <MapController center={position} />
       </MapContainer>
     </div>
   );
