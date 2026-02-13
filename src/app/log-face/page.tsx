@@ -2,25 +2,32 @@
 import { useState } from 'react';
 
 export default function SarahPage() {
-  const [msg, setMsg] = useState('Ready');
+  const [status, setStatus] = useState('READY');
   
   const send = async () => {
-    setMsg('Sending...');
-    navigator.geolocation.getCurrentPosition(async (p) => {
-      await fetch('/api/pulse', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lat: p.coords.latitude, lng: p.coords.longitude })
-      });
-      setMsg('Sent! ✅');
-    }, () => setMsg('Turn on GPS'));
+    setStatus('SENDING...');
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        await fetch('/api/pulse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            lat: pos.coords.latitude, 
+            lng: pos.coords.longitude,
+            time: new Date().toLocaleTimeString() 
+          })
+        });
+        setStatus('SENT! ✅');
+      } catch (e) { setStatus('RETRY?'); }
+    }, () => setStatus('GPS ERROR'));
   };
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#020617', color: 'white', fontFamily: 'sans-serif' }}>
-      <button onClick={send} style={{ padding: '40px', fontSize: '2rem', borderRadius: '20px', backgroundColor: '#2563eb', color: 'white', border: 'none' }}>
-        {msg}
+      <button onClick={send} style={{ padding: '50px', fontSize: '2rem', borderRadius: '30px', backgroundColor: '#2563eb', color: 'white', border: 'none', fontWeight: 'bold' }}>
+        {status}
       </button>
+      <p style={{ marginTop: '20px', color: '#94a3b8' }}>Tap to send location to Dad</p>
     </div>
   );
 }
