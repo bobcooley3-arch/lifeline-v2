@@ -9,8 +9,8 @@ const redis = new Redis({
 export async function GET() {
   try {
     const data = await redis.get('lifeline-state');
-    return NextResponse.json(data || { error: 'No data found' });
-  } catch (error) {
+    return NextResponse.json(data || { error: 'No data' });
+  } catch (e) {
     return NextResponse.json({ error: 'Read Error' }, { status: 500 });
   }
 }
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     await redis.set('lifeline-state', { ...body, lastCheckIn: Date.now() });
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (e) {
     return NextResponse.json({ error: 'Write Error' }, { status: 500 });
   }
 }
