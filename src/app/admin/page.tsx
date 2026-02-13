@@ -33,7 +33,7 @@ export default function AdminMap() {
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
-      <h1 style={{ textAlign: 'center', padding: '10px', background: '#eee' }}>Dad's Safety Portal</h1>
+      <h1 style={{ textAlign: 'center', padding: '10px', background: '#eee' }}>Dad's Safety Portal (v4 - Map Fix)</h1>
       <MapContainer center={position} zoom={13} style={{ height: '90%', width: '100%' }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={position} icon={icon}>
