@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function SarahPage() {
   const [status, setStatus] = useState('Ready');
@@ -16,27 +16,28 @@ export default function SarahPage() {
       try {
         const res = await fetch('/api/pulse', {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
-            batt: (navigator as any).getBattery ? await (navigator as any).getBattery().then((b: any) => Math.round(b.level * 100)) : 100
+            lastUpdate: new Date().toISOString()
           })
         });
         if (res.ok) setStatus('Signal Sent! ✅');
       } catch (e) {
-        setStatus('Error');
+        setStatus('Retry');
         setError('Check connection');
       }
-    }, (err) => setError('Enable GPS permissions'));
+    }, (err) => setError('Please enable GPS'));
   };
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#020617', color: 'white', padding: '20px', textAlign: 'center' }}>
-      <h1>Lifeline Sarah</h1>
-      <p style={{ color: error ? '#f87171' : '#94a3b8' }}>{error || 'Press below to update Dad'}</p>
+      <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Lifeline</h1>
+      <p style={{ color: error ? '#f87171' : '#94a3b8', marginBottom: '30px' }}>{error || 'Tap to update Dad'}</p>
       <button 
         onClick={sendLocation}
-        style={{ padding: '20px 40px', fontSize: '1.2rem', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold' }}
+        style={{ padding: '30px 60px', fontSize: '1.5rem', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 20px rgba(37, 99, 235, 0.4)' }}
       >
         {status}
       </button>
