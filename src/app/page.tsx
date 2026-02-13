@@ -25,17 +25,17 @@ export default function Home() {
           <div>
             <div style={{ fontSize: '1.2rem', color: '#60a5fa' }}>📍 Current Lat: {data.lat}</div>
             <div style={{ fontSize: '1.2rem', color: '#60a5fa' }}>📍 Current Lng: {data.lng}</div>
-            <p>Last Ping: {data.time || 'Received'}</p>
+            <p>Last Signal: {data.time || 'Active'}</p>
           </div>
         ) : (
-          <p>Waiting for connection...</p>
+          <p>Waiting for Sarah's first signal...</p>
         )}
       </div>
       <button 
         onClick={() => fetch('/api/pulse', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({lat: 40.7128, lng: -74.0060, time: 'TEST'})})}
         style={{ marginTop: '20px', padding: '10px', backgroundColor: '#dc2626', color: 'white', border: 'none', borderRadius: '5px' }}
       >
-        TEST NY CONNECTION
+        TEST NEW YORK
       </button>
     </div>
   );
