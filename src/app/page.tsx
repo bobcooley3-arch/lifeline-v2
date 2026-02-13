@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-export default function AdminPage() {
+export default function Home() {
   const [data, setData] = useState<any>(null);
 
   const sync = async () => {
@@ -13,31 +13,30 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    const timer = setInterval(sync, 5000);
-    return () => clearInterval(timer);
+    const i = setInterval(sync, 5000);
+    return () => clearInterval(i);
   }, []);
 
   return (
-    <div style={{ height: '100vh', backgroundColor: '#020617', color: 'white', padding: '30px', fontFamily: 'sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1e293b', paddingBottom: '15px' }}>
-        <h1 style={{ margin: 0 }}>Lifeline Admin</h1>
-        <button onClick={() => fetch('/api/pulse', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({lat: 40.7128, lng: -74.0060, time: 'TEST'})})} style={{ backgroundColor: '#dc2626', color: 'white', padding: '10px 15px', borderRadius: '6px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
-          TEST NEW YORK
-        </button>
-      </div>
-      <div style={{ marginTop: '60px', textAlign: 'center' }}>
+    <div style={{ height: '100vh', backgroundColor: '#020617', color: 'white', padding: '40px', fontFamily: 'sans-serif' }}>
+      <h1>Lifeline System Active</h1>
+      <div style={{ marginTop: '40px', padding: '20px', border: '1px solid #1e293b', borderRadius: '10px' }}>
         {data ? (
           <div>
-            <div style={{ fontSize: '4rem', marginBottom: '10px' }}>📍</div>
-            <div style={{ fontSize: '2.5rem', color: '#60a5fa', fontWeight: 'bold' }}>
-              {data.lat.toFixed(4)}, {data.lng.toFixed(4)}
-            </div>
-            <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>Last Signal: {data.time}</p>
+            <div style={{ fontSize: '1.2rem', color: '#60a5fa' }}>📍 Current Lat: {data.lat}</div>
+            <div style={{ fontSize: '1.2rem', color: '#60a5fa' }}>📍 Current Lng: {data.lng}</div>
+            <p>Last Ping: {data.time || 'Received'}</p>
           </div>
         ) : (
-          <p style={{ color: '#475569', fontSize: '1.2rem' }}>Waiting for Sarah's first signal...</p>
+          <p>Waiting for connection...</p>
         )}
       </div>
+      <button 
+        onClick={() => fetch('/api/pulse', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({lat: 40.7128, lng: -74.0060, time: 'TEST'})})}
+        style={{ marginTop: '20px', padding: '10px', backgroundColor: '#dc2626', color: 'white', border: 'none', borderRadius: '5px' }}
+      >
+        TEST NY CONNECTION
+      </button>
     </div>
   );
 }
