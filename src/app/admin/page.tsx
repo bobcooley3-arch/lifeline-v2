@@ -15,7 +15,7 @@ export default function AdminMap() {
 
   async function fetchLocation() {
     try {
-      const response = await fetch('/api/checkin');
+      const response = await fetch('/api/pulse');
       const data = await response.json();
       if (data && data.lat && data.lng) {
         setPosition([data.lat, data.lng]);
