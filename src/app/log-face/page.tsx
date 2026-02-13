@@ -10,7 +10,11 @@ export default function Sarah() {
       await fetch('/api/pulse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lat: p.coords.latitude, lng: p.coords.longitude, time: new Date().toLocaleTimeString() })
+        body: JSON.stringify({ 
+          lat: p.coords.latitude, 
+          lng: p.coords.longitude, 
+          time: new Date().toLocaleTimeString() 
+        })
       });
       setMsg('SENT! ✅');
     }, () => setMsg('ERROR: ENABLE GPS'));
