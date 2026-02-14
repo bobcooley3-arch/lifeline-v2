@@ -1,43 +1,37 @@
-'use client'
-import React, { useState } from 'react'
-
-export default function Dashboard() {
-  const [status, setStatus] = useState('System Standby')
-  const [coords, setCoords] = useState('0.0000, 0.0000')
-
-  const testConnection = async () => {
-    setStatus('Sending Signal...')
-    try {
-      const res = await fetch('/api/pulse', {
-        method: 'POST',
-        body: JSON.stringify({ lat: 40.7128, lng: -74.0060, battery: 100 }),
-      })
-      if (res.ok) {
-        setStatus('Signal Confirmed')
-        setCoords('40.7128, -74.0060')
-      }
-    } catch (e) {
-      setStatus('Engine Stall')
-    }
+export default function Page() {
+  const testPulse = () => {
+    alert("Pulse Engine Initialized. Waiting for API Route...");
   }
 
   return (
-    <div style={{ textAlign: 'center', border: '1px solid #1e293b', padding: '40px', borderRadius: '12px' }}>
-      <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>LIFELINE CORE</h1>
-      <p style={{ color: '#94a3b8', marginBottom: '30px' }}>Forensic Safety Engine Active</p>
+    <main style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      fontFamily: 'sans-serif',
+      color: 'white',
+      backgroundColor: '#0f172a'
+    }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>LIFELINE CORE</h1>
+      <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Forensic Safety Engine v1.0</p>
       
-      <div style={{ background: '#0f172a', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-        <div style={{ fontSize: '12px', color: '#64748b' }}>LAST KNOWN POSITION</div>
-        <div style={{ fontSize: '32px', fontWeight: 'bold', margin: '10px 0' }}>{coords}</div>
-        <div style={{ color: status === 'Signal Confirmed' ? '#4ade80' : '#f87171' }}>{status}</div>
-      </div>
-
       <button 
-        onClick={testConnection}
-        style={{ background: '#ef4444', color: 'white', border: 'none', padding: '15px 30px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
+        onClick={testPulse}
+        style={{
+          padding: '1rem 2rem',
+          fontSize: '1.2rem',
+          backgroundColor: '#ef4444',
+          color: 'white',
+          border: 'none',
+          borderRadius: '0.5rem',
+          cursor: 'pointer',
+          fontWeight: 'bold'
+        }}
       >
-        TEST NEW YORK SIGNAL
+        TEST NEW YORK
       </button>
-    </div>
+    </main>
   )
 }
