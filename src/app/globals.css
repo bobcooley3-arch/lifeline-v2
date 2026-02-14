@@ -1,10 +1,11 @@
 body {
   margin: 0;
   padding: 0;
-  background: #020617;
+  background: #020617; /* Rolls Royce Deep Blue */
   color: white;
   font-family: sans-serif;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
