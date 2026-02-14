@@ -1,8 +1,4 @@
 export default function Page() {
-  const testPulse = () => {
-    alert("Pulse Engine Initialized. Waiting for API Route...");
-  }
-
   return (
     <main style={{ 
       minHeight: '100vh', 
@@ -18,7 +14,6 @@ export default function Page() {
       <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Forensic Safety Engine v1.0</p>
       
       <button 
-        onClick={testPulse}
         style={{
           padding: '1rem 2rem',
           fontSize: '1.2rem',
@@ -29,6 +24,7 @@ export default function Page() {
           cursor: 'pointer',
           fontWeight: 'bold'
         }}
+        onClick={() => alert('Pulse Engine Initialized')}
       >
         TEST NEW YORK
       </button>
